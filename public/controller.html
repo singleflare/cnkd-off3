@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controller</title>
+</head>
+
+<body>
+  <style>
+    body {
+      background-color: black;
+      aspect-ratio: 16/9;
+      margin: 0;
+    }
+
+    * {
+      font-size: 20pt;
+    }
+
+    span {
+      font-family: 'Myriad Pro';
+      color: white;
+    }
+
+    button {
+      font-family: 'Myriad Pro';
+      background-color: black;
+      color: white;
+      border: 1px solid white;
+    }
+
+    button:hover {
+      background-color: white;
+      color: black;
+    }
+
+    #controlLetters {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      width: 100%;
+    }
+
+    .letterBtn {
+      background-color: black;
+      color: white;
+      height: 50px;
+      font-size: 30pt;
+    }
+
+    .letterBtn:hover {
+      background-color: white !important;
+      color: black !important;
+    }
+
+    .letterBtn:disabled {
+      opacity: 0.2;
+    }
+
+    .puzzleInput {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      width: 0px;
+      gap: 5px;
+    }
+
+    .letterInput {
+      width: 25px;
+      height: 50px;
+      text-align: center;
+    }
+
+    .flexContainer {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .flexContainer>* {
+      width: 100%;
+    }
+
+    #scoreboard {
+      display: inline-block;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  </style>
+  <div class='flexContainer'>
+    <div>
+      <div id="controlLetters">
+      </div>
+      <span>Đề</span>
+      <input type="file" id="fileInput" accept='.xlsx' /><br>
+      <hr>
+      <button id="prevRoundBtn">Ô chữ trước</button>
+      <button id="nextRoundBtn">Ô chữ sau</button>
+      <hr>
+      <span>Ô chữ</span>
+      <button id="showPuzzle">Hiện</button>
+      <button id="solvePuzzle">Giải</button>
+      <button id="puzzleMode">Đoán nhanh</button>
+      <button id="openRandomTossup">Mở chữ ngẫu nhiên</button>
+      <button id="openRandomTossupWithTime">Mở chữ ngẫu nhiên và tính giờ</button>
+      <button id="stopOpenRandomTossup">Dừng mở chữ</button>
+      <button id="deletePuzzle">Xóa ô chữ</button>
+      <hr>
+      <span>VĐB luật mới</span>
+      <button id='setBounsTime'>Đặt thời gian</button>
+      <button id='startTossUpBonus'>Mở chữ N,H,A và chữ ngẫu nhiên</button>
+      <button id="stopOpenRandomTossup">Dừng mở chữ</button>
+      <button id="solvePuzzleNoSound">Giải (không tiếng)</button>
+      <span id='time'>Thời gian: 0</span>
+    </div>
+    <div>
+      <div id='scoreboard'>
+        <div>
+          <input id='p1Name' placeholder='Tên NC1' style='width: 200px;'>
+          <input type="number" id="p1ScoreInput" style='width: 75px;' placeholder='Điểm' />
+          <button class='set' id='p1Set'>Set</button>
+          <button class='plus' id='p1Plus'>+</button>
+          <button class='minus' id='p1Minus'>-</button>
+          <button class='double' id='p1Double'>x2</button>
+          <button class='half' id='p1Half'>/2</button>
+          <button class='clear' id='p1Clear'>MĐ</button>
+          <span id='p1Score'></span>
+          <input type='number' id='p1TotalInput' style='width:75px' placeholder='Tổng' />
+          <button class='totalSet' id='p1SetTotal'>Set</button>
+          <button class='totalAdd' id='p1AddTotal'>+</button>
+          <span id='p1Total'></span>
+        </div>
+        <div>
+          <input id='p2Name' placeholder='Tên NC2' style='width: 200px;'>
+          <input type="number" id="p2ScoreInput" style='width: 75px;' placeholder='Điểm' />
+          <button class='set' id='p2Set'>Set</button>
+          <button class='plus' id='p2Plus'>+</button>
+          <button class='minus' id='p2Minus'>-</button>
+          <button class='double' id='p2Double'>x2</button>
+          <button class='half' id='p2Half'>/2</button>
+          <button class='clear' id='p2Clear'>MĐ</button>
+          <span id='p2Score'></span>
+          <input type='number' id='p2TotalInput' style='width:75px' placeholder='Tổng' />
+          <button class='totalSet' id='p2SetTotal'>Set</button>
+          <button class='totalAdd' id='p2AddTotal'>+</button>
+          <span id='p2Total'></span>
+        </div>
+        <div>
+          <input id='p3Name' placeholder='Tên NC3' style='width: 200px;'>
+          <input type="number" id="p3ScoreInput" style='width: 75px;' placeholder='Điểm' />
+          <button class='set' id='p3Set'>Set</button>
+          <button class='plus' id='p3Plus'>+</button>
+          <button class='minus' id='p3Minus'>-</button>
+          <button class='double' id='p3Double'>x2</button>
+          <button class='half' id='p3Half'>/2</button>
+          <button class='clear' id='p3Clear'>MĐ</button>
+          <span id='p3Score'></span>
+          <input type='number' id='p3TotalInput' style='width:75px' placeholder='Tổng' />
+          <button class='totalSet' id='p3SetTotal'>Set</button>
+          <button class='totalAdd' id='p3AddTotal'>+</button>
+          <span id='p3Total'></span>
+        </div>
+        <div>
+          <span>Âm thanh</span>
+          <button id="spin2012Btn">Nhạc quay 2012</button>
+          <button id="spin2012HighBtn">Nhạc quay 2012 cao</button>
+          <button id="spin2016Btn">Nhạc quay 2016</button>
+          <button id="spin2016MonoBtn">Nhạc quay 2016 mono</button>
+          <button id="ptBtn">Phần thưởng</button>
+          <button id="bmBtn">Bí mật</button>
+          <button id="tlmmBtn">Thêm lượt/May mắn</button>
+          <button id="cdBtn">Chia đôi</button>
+          <button id="mdBtn">Mất điểm</button>
+          <button id="mlBtn">Mất lượt</button>
+          <button id="saiBtn">Sai</button>
+          <button id="nen1Btn">Nền 1</button>
+          <button id="nen2Btn">Nền 2</button>
+          <button id="30sBtn">30s đặc biệt</button>
+          <button id="10sBtn">10s đặc biệt</button>
+          <button id="stopBtn">Dừng hết tất cả âm thanh</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+    integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+    integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+  <script>
+    const socket = io();
+    socket.on('buzzed', (data) => {
+      console.log('Player ' + data + ' buzzed!');
+    })
+    $(() => {
+      for (let i = 0; i <= 63; i++) {
+        $('#controlLetters').append('<button class="letterBtn" id="letterBtn' + i + '"></button>');
+        $('#letterBtn' + i).click(() => {
+          socket.emit('reveal', i)
+        })
+      }
+    })
+
+    let puzzles = [];
+    let solvedPuzzles = [];
+    let questions = []
+    let explains = []
+    let puzzleNumber = 0
+    let puzzleMode = 'tossup'
+
+    $('#fileInput').on('change', async (e) => {
+      const file = e.target.files[0]
+      const data = await file.arrayBuffer()
+      const workbook = XLSX.read(data)
+      const sheet = workbook.Sheets[workbook.SheetNames[0]]
+      // Helper function to safely get cell 
+      const getCellValue = (sheet, col, row) => {
+        const cell = sheet[XLSX.utils.encode_cell({ c: col, r: row })]
+        return cell ? cell.v : ''
+      }
+      let puzzle = []
+      let solvedPuzzle = []
+      for (let r = 1; r <= 100; r++) {
+        for (let c = 0; c < 16; c++) {
+          puzzle.push(getCellValue(sheet, c, r))
+        }
+        for (let c = 17; c < 33; c++) {
+          solvedPuzzle.push(getCellValue(sheet, c, r))
+        }
+        if (r % 5 == 4) {
+          puzzles.push(puzzle)
+          solvedPuzzles.push(solvedPuzzle)
+          puzzle = []
+          solvedPuzzle = []
+          r++
+        }
+      }
+      console.log(puzzles, solvedPuzzles)
+    })
+
+    function countLetters(puzzleArray) {
+      let letters = ['A', 'Ă', 'Â', 'B', 'C', 'D', 'Đ', 'E', 'Ê', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'Ô', 'Ơ', 'P', 'Q', 'R', 'S', 'T', 'U', 'Ư', 'V', 'X', 'Y']
+      let numberOfLetters = []
+      let totalNumOfLetters = 0
+      letters.forEach(letter => {
+        let letterCount = 0
+        puzzles.forEach(puzzleLetter => {
+          if (puzzleLetter == letter) letterCount++
+        })
+        numberOfLetters.push(letterCount)
+        totalNumOfLetters += letterCount
+      })
+      console.log(totalNumOfLetters)
+      return [numberOfLetters, totalNumOfLetters]
+    }
+
+    function resetControlLetters() {
+      for (let i = 0; i <= 63; i++) {
+        $('#letterBtn' + i).text('')
+        $('#letterBtn' + i).css('background-color', 'black')
+        $('#letterBtn' + i).css('color', 'white')
+        $('#letterBtn' + i).hover(() => {
+          $('#letterBtn' + i).css('background-color', 'white')
+          $('#letterBtn' + i).css('color', 'black')
+        })
+        $('#letterBtn' + i).mouseleave(() => {
+          $('#letterBtn' + i).css('background-color', 'black')
+          $('#letterBtn' + i).css('color', 'white')
+        })
+      }
+    }
+
+    $('#prevRoundBtn').click(() => {
+      $('#scoreboard div').css('background-color', 'black')
+      socket.emit('resetBuzzers')
+      if (puzzleNumber > 0) {
+        puzzleNumber--
+        for (let i = 0; i <= 63; i++) {
+          $('#letterBtn' + i).prop('disabled', true)
+          $('#letterBtn' + i).text('')
+          $('#letterBtn' + i).prop('disabled', false)
+          puzzles[puzzleNumber][i] != '' ? $('#letterBtn' + i).text(puzzles[puzzleNumber][i]) : $('#letterBtn' + i).prop('disabled', true)
+        }
+        socket.emit('puzzle', { puzzle: puzzles[puzzleNumber], solved: solvedPuzzles[puzzleNumber] })
+      }
+    })
+    $('#nextRoundBtn').click(() => {
+      $('#scoreboard div').css('background-color', 'black')
+      socket.emit('resetBuzzers')
+      if (puzzleNumber < puzzles.length - 1) {
+        puzzleNumber++
+        for (let i = 0; i <= 63; i++) {
+          $('#letterBtn' + i).prop('disabled', true)
+          $('#letterBtn' + i).text('')
+          $('#letterBtn' + i).prop('disabled', false)
+          puzzles[puzzleNumber][i] != '' ? $('#letterBtn' + i).text(puzzles[puzzleNumber][i]) : $('#letterBtn' + i).prop('disabled', true)
+        }
+        socket.emit('puzzle', { puzzle: puzzles[puzzleNumber], solved: solvedPuzzles[puzzleNumber] })
+      }
+    })
+    $('#showPuzzle').click(() => {
+      socket.emit('revealPuzzle')
+    })
+    $('#solvePuzzle').click(() => {
+      socket.emit('solvePuzzle')
+    })
+    $('#puzzleMode').click(() => {
+      if (puzzleMode == 'normal') {
+        socket.emit('puzzleMode', 0)
+        puzzleMode = 'tossup'
+        $('#puzzleMode').text('Đoán nhanh')
+      }
+      else if (puzzleMode == 'tossup') {
+        socket.emit('puzzleMode', 1)
+        puzzleMode = 'normal'
+        $('#puzzleMode').text('Vòng thường')
+      }
+    })
+
+    $('#spin2012Btn').click(() => {
+      socket.emit('playSound', './sounds/2012.mp3')
+    })
+    $('#spin2012HighBtn').click(() => {
+      socket.emit('playSound', './sounds/2012cao.mp3')
+    })
+    $('#spin2016Btn').click(() => {
+      socket.emit('playSound', './sounds/2016.mp3')
+    })
+    $('#spin2016MonoBtn').click(() => {
+      socket.emit('playSound', './sounds/2016 mono.mp4')
+    })
+    $('#ptBtn').click(() => {
+      socket.emit('playSound', './sounds/pt.mp3')
+    })
+    $('#bmBtn').click(() => {
+      socket.emit('playSound', './sounds/bm.mp3')
+    })
+    $('#tlmmBtn').click(() => {
+      socket.emit('playSound', './sounds/tlmm.mp3')
+    })
+    $('#cdBtn').click(() => {
+      socket.emit('playSound', './sounds/cd.mp3')
+    })
+    $('#mdBtn').click(() => {
+      socket.emit('playSound', './sounds/md.mp3')
+    })
+    $('#mlBtn').click(() => {
+      socket.emit('playSound', './sounds/ml.mp3')
+    })
+    $('#saiBtn').click(() => {
+      socket.emit('playSound', './sounds/sai.mp3')
+    })
+    $('#nen1Btn').click(() => {
+      socket.emit('playSound', './sounds/nen1.mp3')
+    })
+    $('#nen2Btn').click(() => {
+      socket.emit('playSound', './sounds/nen2.mp3')
+    })
+    $('#30sBtn').click(() => {
+      socket.emit('playSound', './sounds/30s.mp3')
+      //socket.emit('30s')
+    })
+    $('#10sBtn').click(() => {
+      socket.emit('playSound', './sounds/10s.mp3')
+      //socket.emit('10s')
+    })
+    $('#stopBtn').click(() => {
+      socket.emit('stopAllSounds')
+    })
+
+    $('#showWelcomePuzzle').click(() => {
+      socket.emit('showWelcomePuzzle')
+    })
+    $('#openRandomTossup').click(() => {
+      socket.emit('openRandomTossup')
+    })
+    $('#openRandomTossupWithTime').click(() => {
+      socket.emit('openRandomTossupWithTime')
+    })
+    $('#stopOpenRandomTossup').click(() => {
+      socket.emit('stopOpenRandomTossup')
+    })
+    $('#startTossUpBonus').click(() => {
+      socket.emit('startTossUpBonus')
+    })
+    $('#setBounsTime').click(() => {
+      let time = prompt('Nhập thời gian cho vòng đặc biệt')
+      if (time) {
+        socket.emit('setBonusTime', parseInt(time))
+      }
+    })
+    $('#solvePuzzleNoSound').click(() => {
+      socket.emit('solvePuzzleNoSound')
+    })
+
+    let p1Score = 0, p2Score = 0, p3Score = 0, p1Total = 0, p2Total = 0, p3Total = 0
+
+    function plus(player, score) {
+      if (player == 1) {
+        p1Score += score
+        $('#p1Score').text(p1Score)
+      }
+      else if (player == 2) {
+        p2Score += score
+        $('#p2Score').text(p2Score)
+      }
+      else if (player == 3) {
+        p3Score += score
+        $('#p3Score').text(p3Score)
+      }
+    }
+    function minus(player, score) {
+      if (player == 1) {
+        p1Score -= score
+        $('#p1Score').text(p1Score)
+      }
+      else if (player == 2) {
+        p2Score -= score
+        $('#p2Score').text(p2Score)
+      }
+      else if (player == 3) {
+        p3Score -= score
+        $('#p3Score').text(p3Score)
+      }
+    }
+    function double(player) {
+      if (player == 1) {
+        p1Score *= 2
+        $('#p1Score').text(p1Score)
+      }
+      else if (player == 2) {
+        p2Score *= 2
+        $('#p2Score').text(p2Score)
+      }
+      else if (player == 3) {
+        p3Score *= 2
+        $('#p3Score').text(p3Score)
+      }
+    }
+    function half(player) {
+      if (player == 1) {
+        p1Score /= 2
+        $('#p1Score').text(p1Score)
+      }
+      else if (player == 2) {
+        p2Score /= 2
+        $('#p2Score').text(p2Score)
+      }
+      else if (player == 3) {
+        p3Score /= 2
+        $('#p3Score').text(p3Score)
+      }
+    }
+    function addTotal(player, score) {
+      if (player == 1) {
+        p1Total += score
+        $('#p1Total').text(p1Total)
+      }
+      if (player == 2) {
+        p2Total += score
+        $('#p2Total').text(p2Total)
+      }
+      if (player == 3) {
+        p3Total += score
+        $('#p3Total').text(p3Total)
+      }
+    }
+
+    function updateHostScoreboard() {
+      let p1Name = $('#p1Name').val()
+      let p2Name = $('#p2Name').val()
+      let p3Name = $('#p3Name').val()
+      socket.emit('scoreboard', { p1Name, p2Name, p3Name, p1Score, p2Score, p3Score, p1Total, p2Total, p3Total })
+    }
+
+    $('#p1Set').click(() => {
+      p1Score = parseInt($('#p1ScoreInput').val())
+      $('#p1Score').text(p1Score)
+      updateHostScoreboard()
+    })
+    $('#p1Plus').click(() => {
+      let scoreToChange = $('#p1ScoreInput').val()
+      plus(1, parseInt(scoreToChange))
+      updateHostScoreboard()
+    })
+    $('#p1Minus').click(() => {
+      let scoreToChange = $('#p1ScoreInput').val()
+      minus(1, parseInt(scoreToChange))
+      updateHostScoreboard()
+    })
+    $('#p1Double').click(() => {
+      double(1)
+      updateHostScoreboard()
+    })
+    $('#p1Half').click(() => {
+      half(1)
+      updateHostScoreboard()
+    })
+    $('#p1Clear').click(() => {
+      p1Score = 0
+      $('#p1Score').text(p1Score)
+      updateHostScoreboard()
+    })
+    $('#p1SetTotal').click(() => {
+      p1Total = parseInt($('#p1TotalInput').val())
+      $('#p1Total').text(p1Total)
+      updateHostScoreboard()
+    })
+    $('#p1AddTotal').click(() => {
+      p1Total += parseInt($('#p1TotalInput').val())
+      $('#p1Total').text(p1Total)
+      updateHostScoreboard()
+    })
+    $('#p2Set').click(() => {
+      p2Score = parseInt($('#p2ScoreInput').val())
+      $('#p2Score').text(p2Score)
+      updateHostScoreboard()
+    })
+    $('#p2Plus').click(() => {
+      let scoreToChange = $('#p2ScoreInput').val()
+      plus(2, parseInt(scoreToChange))
+      updateHostScoreboard()
+    })
+    $('#p2Minus').click(() => {
+      let scoreToChange = $('#p2ScoreInput').val()
+      minus(2, parseInt(scoreToChange))
+      updateHostScoreboard()
+    })
+    $('#p2Double').click(() => {
+      double(2)
+      updateHostScoreboard()
+    })
+    $('#p2Half').click(() => {
+      half(2)
+      updateHostScoreboard()
+    })
+    $('#p2Clear').click(() => {
+      p2Score = 0
+      $('#p2Score').text(p2Score)
+      updateHostScoreboard()
+    })
+    $('#p2SetTotal').click(() => {
+      p2Total = parseInt($('#p2TotalInput').val())
+      $('#p2Total').text(p2Total)
+      updateHostScoreboard()
+    })
+    $('#p2AddTotal').click(() => {
+      p2Total += parseInt($('#p2TotalInput').val())
+      $('#p2Total').text(p2Total)
+      updateHostScoreboard()
+    })
+    $('#p3Set').click(() => {
+      p3Score = parseInt($('#p3ScoreInput').val())
+      $('#p3Score').text(p3Score)
+      updateHostScoreboard()
+    })
+    $('#p3Plus').click(() => {
+      let scoreToChange = $('#p3ScoreInput').val()
+      plus(3, parseInt(scoreToChange))
+      updateHostScoreboard()
+    })
+    $('#p3Minus').click(() => {
+      let scoreToChange = $('#p3ScoreInput').val()
+      minus(3, parseInt(scoreToChange))
+      updateHostScoreboard()
+    })
+    $('#p3Double').click(() => {
+      double(3)
+      updateHostScoreboard()
+    })
+    $('#p3Half').click(() => {
+      half(3)
+      updateHostScoreboard()
+    })
+    $('#p3Clear').click(() => {
+      p3Score = 0
+      $('#p3Score').text(p3Score)
+      updateHostScoreboard()
+    })
+    $('#p3SetTotal').click(() => {
+      p3Total = parseInt($('#p3TotalInput').val())
+      $('#p3Total').text(p3Total)
+      updateHostScoreboard()
+    })
+    $('#p3AddTotal').click(() => {
+      p3Total += parseInt($('#p3TotalInput').val())
+      $('#p3Total').text(p3Total)
+      updateHostScoreboard()
+    })
+
+    socket.on('disableLetterBtn', letterNumber => {
+      $('#letterBtn' + letterNumber).prop('disabled', true)
+    })
+    socket.on('buzzed', player => {
+      $('#scoreboard div:nth-child(' + player + ')').css('background-color', 'white')
+    })
+    socket.on('bonusTime', time => {
+      $('#time').text('Thời gian: ' + time)
+    })
+  </script>
+</body>
+
+</html>

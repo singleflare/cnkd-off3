@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzle full screen</title>
+</head>
+
+<body>
+  <style>
+    * {
+      -webkit-user-select: none;
+      /* Safari */
+      -ms-user-select: none;
+      /* IE 10 and IE 11 */
+      user-select: none;
+      /* Standard syntax */
+      pointer-events: none;
+    }
+
+    @font-face {
+      font-family: utm-thanh-nhac;
+      src: url("UTM-Thanh-Nhac-TL.ttf");
+    }
+
+    @font-face {
+      font-family: 'Myriad Pro';
+      src: url('MYRIADPRO-SEMIBOLD.OTF');
+    }
+
+    body {
+      background-color: white;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #bg {
+      position: absolute;
+      background-image: url('bg gs.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      z-index: -3;
+      width: 1930px;
+      height: 1090px;
+      top: -5px;
+      left: -5px;
+      filter: blur(5px);
+      background-color: black;
+    }
+
+    :root {
+      --unopened: #72B04E;
+      --waitToOpen: #0483fb;
+      --opened: #FFFFFF;
+    }
+
+    p {
+      font-family: 'Myriad Pro';
+      font-size: 45pt;
+      text-align: center;
+      margin: 9px 0px;
+      font-weight: 600;
+    }
+
+    #board {
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      left: 447.5px;
+      top: 512px;
+      scale: 1.45;
+      gap: 11px;
+    }
+
+    .letter {
+      background-color: var(--unopened);
+      width: 56px;
+      height: 85px;
+      border: 2px black solid;
+      box-sizing: border-box;
+    }
+
+    @keyframes bobbing {
+      0% {
+        transform: scale(0)
+      }
+
+      80% {
+        transform: scale(1.2)
+      }
+
+      100% {
+        transform: scale(1)
+      }
+    }
+
+    .letter p.animated {
+      animation: bobbing linear 0.4s;
+    }
+
+    .letter.hasLetter {
+      background-color: var(--opened);
+    }
+
+    .letter.waitToOpen {
+      background-color: var(--waitToOpen);
+    }
+
+    .letter.shown {
+      background-color: var(--opened);
+    }
+
+    .letter.timer {
+      background-color: var(--timer);
+    }
+
+    #p1Score,
+    #p2Score,
+    #p3Score {
+      font-size: 60pt;
+      color: white;
+      text-shadow: 2px 2px black;
+    }
+
+    #p1Name,
+    #p2Name,
+    #p3Name {
+      font-size: 20pt;
+      color: white;
+      text-shadow: 2px 2px black;
+    }
+
+    #boardBg {
+      position: absolute;
+      top: 125px;
+      width: 1640px;
+      left: 160px;
+    }
+
+    .flexcon {
+      display: flex;
+      width: 1920px;
+      position: relative;
+    }
+
+    .flexcon>* {
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+  <div id='bg'></div>
+  <img src='puzzle2012withnontmn.png' id='boardBg'>
+  <div id="board"></div>
+  <!-- <img src="scoreboard2.png" style="position:absolute;width:1920px;display: none;"> -->
+  <div class='flexcon'>
+    <div id="p1Name"></div>
+    <div id="p2Name"></div>
+    <div id="p3Name"></div>
+  </div>
+  <div class='flexcon'>
+    <div id="p1Score"></div>
+    <div id="p2Score"></div>
+    <div id="p3Score"></div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+    integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"
+    integrity="sha512-xi/RZRIF/S0hJ+yJJYuZ5yk6/8pCiRlEXZzoguSMl+vk2i3m6UjUO/WcZ11blRL/O+rnj94JRGwt/CHbc9+6EA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    const socket = io();
+  </script>
+  <script type='module' src="puzzleGeneral.js"></script>
+</body>
+
+</html>
