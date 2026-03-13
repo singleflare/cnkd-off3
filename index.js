@@ -98,6 +98,7 @@ io.on('connection',(socket)=>{
     io.emit('reveal',{index:idx,state:puzzleState[idx],letter:puzzle[idx]})
   })
   socket.on('solvePuzzle',()=>{
+    buzzed=[]
     io.emit('buzzersReset')
     io.emit('playSound', './sounds/giaiochu.mp3')
     let idxToOpen=[]
@@ -108,6 +109,7 @@ io.on('connection',(socket)=>{
     io.emit('solvePuzzle',{idxToOpen,solvedPuzzle})
   })
   socket.on('solvePuzzleNoSound',()=>{
+    buzzed=[]
     io.emit('buzzersReset')
     let idxToOpen=[]
     for(let i=0;i<64;i++){
@@ -126,6 +128,8 @@ io.on('connection',(socket)=>{
     puzzleMode=data
   })
   socket.on('openRandomTossup',()=>{
+    buzzed=[]
+    io.emit('buzzersReset')
     io.emit('enableBuzzers')
     let idxToOpen=[]
     for(let i=0;i<64;i++){
