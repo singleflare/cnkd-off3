@@ -110,12 +110,14 @@
       <button id="openRandomTossup">Mở chữ ngẫu nhiên</button>
       <button id="openRandomTossupWithTime">Mở chữ ngẫu nhiên và tính giờ</button>
       <button id="stopOpenRandomTossup">Dừng mở chữ</button>
+      <button id="continueOpenRandomTossup">Tiếp tục mở chữ</button>
       <button id="deletePuzzle">Xóa ô chữ</button>
       <hr>
       <span>VĐB luật mới</span>
       <button id='setBounsTime'>Đặt thời gian</button>
       <button id='startTossUpBonus'>Mở chữ N,H,A và chữ ngẫu nhiên</button>
       <button id="stopOpenRandomTossup">Dừng mở chữ</button>
+      <button id="continueOpenRandomTossup">Tiếp tục mở chữ</button>
       <button id="solvePuzzleNoSound">Giải (không tiếng)</button>
       <span id='time'>Thời gian: 0</span>
     </div>
@@ -386,6 +388,9 @@
     })
     $('#stopOpenRandomTossup').click(() => {
       socket.emit('stopOpenRandomTossup')
+    })
+    $('#continueOpenRandomTossup').click(() => {
+      socket.emit('continueOpenRandomTossup')
     })
     $('#startTossUpBonus').click(() => {
       socket.emit('startTossUpBonus')

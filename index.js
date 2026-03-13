@@ -11,7 +11,7 @@ app.use(express.static('public'))
 
 let puzzle=[]
 let solvedPuzzle=[]
-let puzzleState=[]
+let puzzleState=[] // 0: empty, 1: has letter, 2: selected, 3: revealed & animated (only in puzzle), 4: revealed
 let buzzed=[]
 let puzzleMode=1
 let tossupInterval=null
@@ -102,7 +102,7 @@ io.on('connection',(socket)=>{
     io.emit('playSound', './sounds/giaiochu.mp3')
     let idxToOpen=[]
     for(let i=0;i<64;i++){
-      if(puzzleState[i]==1) puzzleState[i]=3
+      if(puzzleState[i]==1) puzzleState[i]=4
       if(puzzleState[i]==3) idxToOpen.push(i)
     }
     io.emit('solvePuzzle',{idxToOpen,solvedPuzzle})
@@ -111,7 +111,7 @@ io.on('connection',(socket)=>{
     io.emit('buzzersReset')
     let idxToOpen=[]
     for(let i=0;i<64;i++){
-      if(puzzleState[i]==1) puzzleState[i]=3
+      if(puzzleState[i]==1) puzzleState[i]=4
       if(puzzleState[i]==3) idxToOpen.push(i)
     }
     io.emit('solvePuzzle',{idxToOpen,solvedPuzzle})
@@ -139,6 +139,7 @@ io.on('connection',(socket)=>{
       else {
         const idx = idxToOpen[i]
         io.emit('reveal',{index:idx,state:3,letter:puzzle[idx]})
+        puzzleState[idx]=4
         io.emit('disableLetterBtn',idx)
         i++
       }
@@ -166,12 +167,17 @@ io.on('connection',(socket)=>{
       else {
         const idx = idxToOpen[i]
         io.emit('reveal',{index:idx,state:3,letter:puzzle[idx]})
+        puzzleState[idx]=4
         io.emit('disableLetterBtn',idx)
         i++
       }
     },1000)
   })
   socket.on('stopOpenRandomTossup',()=>{
+    clearInterval(tossupInterval)
+    clearInterval(bonusTimeInterval)
+  })
+  socket.on('continueOpenRandomTossup',()=>{
     clearInterval(tossupInterval)
     clearInterval(bonusTimeInterval)
   })
