@@ -49,14 +49,13 @@ socket.on('reveal', (data) => {
 })
 
 socket.on('solvePuzzle', data => {
+  console.log(data);
   let i=0
-  setInterval(()=>{
-    if(i<data.idxToOpen.length){
-      $('#letter'+data.idxToOpen[i]).addClass('shown')
-      $('#letter'+data.idxToOpen[i]+' p').text(data.solvedPuzzle[data.idxToOpen[i]])
-      i++
-    }
-  },10)
+  let interval = setInterval(() => {
+    $('#letter' + data.idxToOpen[i] + ' p').text(data.solvedPuzzle[data.idxToOpen[i]]);
+    i++
+    if (i >= data.idxToOpen.length) clearInterval(interval)
+  }, 10)
 })
 socket.on('resetPuzzle', () => {
   for (let i = 0; i <= 63; i++) {

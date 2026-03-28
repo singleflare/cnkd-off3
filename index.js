@@ -43,6 +43,7 @@ io.on('connection',(socket)=>{
     io.emit('buzzersReset')
   })
   socket.on('puzzle',(data)=>{
+    console.log(data)
     io.emit('resetPuzzle')
     puzzle=data.puzzle
     solvedPuzzle=data.solved
@@ -51,6 +52,7 @@ io.on('connection',(socket)=>{
       else if(puzzle[i]=='?'||puzzle[i]=='-'||puzzle[i]=='!'||puzzle[i]=='.'||puzzle[i]==','||puzzle[i]=="&"||puzzle[i]=='/') puzzleState[i]=4
       else puzzleState[i]=1
     }
+    console.log('puzzlestate'+puzzleState)
   })
   socket.on('revealPuzzle',()=>{
     io.emit('playSound', './sounds/moochu.mp3')
@@ -102,8 +104,13 @@ io.on('connection',(socket)=>{
     io.emit('buzzersReset')
     io.emit('playSound', './sounds/giaiochu.mp3')
     let idxToOpen=[]
+    console.log('puzzlestate107'+puzzleState)
     for(let i=0;i<64;i++){
-      if(puzzleState[i]==1) puzzleState[i]=4
+      console.log('puzzleState[' + i + ']: ' + puzzleState[i])
+      if(puzzleState[i]==1) {
+        idxToOpen.push(i)
+        puzzleState[i]=4
+      }
       if(puzzleState[i]==3) idxToOpen.push(i)
     }
     io.emit('solvePuzzle',{idxToOpen,solvedPuzzle})
@@ -113,7 +120,11 @@ io.on('connection',(socket)=>{
     io.emit('buzzersReset')
     let idxToOpen=[]
     for(let i=0;i<64;i++){
-      if(puzzleState[i]==1) puzzleState[i]=4
+      console.log('puzzleState[' + i + ']: ' + puzzleState[i])
+      if(puzzleState[i]==1) {
+        idxToOpen.push(i)
+        puzzleState[i]=4
+      }
       if(puzzleState[i]==3) idxToOpen.push(i)
     }
     io.emit('solvePuzzle',{idxToOpen,solvedPuzzle})
