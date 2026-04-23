@@ -33,11 +33,11 @@ socket.on('reveal', (data) => {
     $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
   }
   else if (data.state == 2) {
-    playSound('./sounds/mochu2012p1.wav');
+    playSound('./sounds/letter_highlight_new.wav');
     $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('waitToOpen');
   }
   else if (data.state == 3) {
-    playSound('./sounds/mochup2.mp3');
+    playSound('./sounds/letter_open.wav');
     $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
     $('#letter' + data.index + ' p').addClass('animated')
     $('#letter' + data.index + ' p').text(data.letter);

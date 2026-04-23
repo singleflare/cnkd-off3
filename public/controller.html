@@ -170,6 +170,7 @@
         </div>
         <div>
           <span>Âm thanh</span>
+          <button id="spin2001Btn">Nhạc quay 2001</button>
           <button id="spin2012Btn">Nhạc quay 2012</button>
           <button id="spin2012HighBtn">Nhạc quay 2012 cao</button>
           <button id="spin2016Btn">Nhạc quay 2016</button>
@@ -181,9 +182,11 @@
           <button id="mdBtn">Mất điểm</button>
           <button id="mlBtn">Mất lượt</button>
           <button id="saiBtn">Sai</button>
+          <button id="sai2009Btn">Sai 2009</button>
           <button id="nen1Btn">Nền 1</button>
           <button id="nen2Btn">Nền 2</button>
           <button id="30sBtn">30s đặc biệt</button>
+          <button id="30s2009Btn">30s 2009</button>
           <button id="10sBtn">10s đặc biệt</button>
           <button id="stopBtn">Dừng hết tất cả âm thanh</button>
         </div>
@@ -326,6 +329,9 @@
       }
     })
 
+    $('#spin2001Btn').click(() => {
+      socket.emit('playSound', './sounds/wheel.wav')
+    })
     $('#spin2012Btn').click(() => {
       socket.emit('playSound', './sounds/2012.mp3')
     })
@@ -359,11 +365,18 @@
     $('#saiBtn').click(() => {
       socket.emit('playSound', './sounds/sai.mp3')
     })
+    $('#sai2009Btn').click(() => {
+      socket.emit('playSound', './sounds/wrong.wav')
+    })
     $('#nen1Btn').click(() => {
       socket.emit('playSound', './sounds/nen1.mp3')
     })
     $('#nen2Btn').click(() => {
       socket.emit('playSound', './sounds/nen2.mp3')
+    })
+    $('#30s2009Btn').click(() => {
+      socket.emit('playSound', './sounds/think.wav')
+      //socket.emit('30s')
     })
     $('#30sBtn').click(() => {
       socket.emit('playSound', './sounds/30s.mp3')

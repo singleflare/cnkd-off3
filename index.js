@@ -55,7 +55,7 @@ io.on('connection',(socket)=>{
     console.log('puzzlestate'+puzzleState)
   })
   socket.on('revealPuzzle',()=>{
-    io.emit('playSound', './sounds/moochu.mp3')
+    io.emit('playSound', './sounds/showpuzzle.wav')
     let openSequence=[
     [0,1,16,17,32,33,48,49],
     [2,3,18,19,34,35,50,51],
@@ -102,7 +102,7 @@ io.on('connection',(socket)=>{
   socket.on('solvePuzzle',()=>{
     buzzed=[]
     io.emit('buzzersReset')
-    io.emit('playSound', './sounds/giaiochu.mp3')
+    io.emit('playSound', './sounds/solved.mp3')
     let idxToOpen=[]
     console.log('puzzlestate107'+puzzleState)
     for(let i=0;i<64;i++){
