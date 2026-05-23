@@ -29,6 +29,11 @@
       src: url('MYRIADPRO-SEMIBOLD.OTF');
     }
 
+    @font-face {
+      font-family: 'Myriad Pro Semibold Semi Condensed';
+      src: url('MYRIADPRO-SEMIBOLDSEMICN.OTF');
+    }
+
     body {
       background-color: white;
       margin: 0;
@@ -37,16 +42,15 @@
 
     #bg {
       position: absolute;
-      background-image: url('bg gs.jpg');
-      background-repeat: no-repeat;
+      background-image: url('puzzleboard chị đẹp.png');
       background-size: cover;
       z-index: -3;
-      width: 1930px;
-      height: 1090px;
-      top: -5px;
+      width: 1920px;
+      height: 1080px;
+      /* top: -5px;
       left: -5px;
       filter: blur(5px);
-      background-color: black;
+      background-color: black; */
     }
 
     :root {
@@ -56,11 +60,12 @@
     }
 
     p {
-      font-family: 'Myriad Pro';
+      font-family: 'Myriad Pro Semibold Semi Condensed';
       font-size: 45pt;
       text-align: center;
-      margin: 9px 0px;
+      margin: 5px 0px;
       font-weight: 600;
+      color: #163A66;
     }
 
     #board {
@@ -75,10 +80,11 @@
     }
 
     .letter {
-      background-color: var(--unopened);
+      background-image: url('letter.png');
+      background-size: cover;
       width: 56px;
       height: 85px;
-      border: 2px black solid;
+      border: 3px black solid;
       box-sizing: border-box;
     }
 
@@ -97,18 +103,22 @@
     }
 
     .letter p.animated {
+      background-image: unset;
       animation: bobbing linear 0.4s;
     }
 
     .letter.hasLetter {
+      background-image: unset;
       background-color: var(--opened);
     }
 
     .letter.waitToOpen {
+      background-image: unset;
       background-color: var(--waitToOpen);
     }
 
     .letter.shown {
+      background-image: unset;
       background-color: var(--opened);
     }
 
@@ -151,7 +161,7 @@
     }
   </style>
   <div id='bg'></div>
-  <img src='puzzle2012withnontmn.png' id='boardBg'>
+  <!-- <img src='puzzleboard chị đẹp.png' id='boardBg'> -->
   <div id="board"></div>
   <!-- <img src="scoreboard2.png" style="position:absolute;width:1920px;display: none;"> -->
   <div class='flexcon'>
