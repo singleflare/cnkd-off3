@@ -55,7 +55,7 @@ io.on('connection',(socket)=>{
     console.log('puzzlestate'+puzzleState)
   })
   socket.on('revealPuzzle',()=>{
-    io.emit('playSound', './sounds/showpuzzle.wav')
+    io.emit('playSound', './sounds/moochu.mp3')
     let openSequence=[
     [0,1,16,17,32,33,48,49],
     [2,3,18,19,34,35,50,51],
