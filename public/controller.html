@@ -250,22 +250,6 @@
       console.log(puzzles, solvedPuzzles)
     })
 
-    function countLetters(puzzleArray) {
-      let letters = ['A', 'Ă', 'Â', 'B', 'C', 'D', 'Đ', 'E', 'Ê', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'Ô', 'Ơ', 'P', 'Q', 'R', 'S', 'T', 'U', 'Ư', 'V', 'X', 'Y']
-      let numberOfLetters = []
-      let totalNumOfLetters = 0
-      letters.forEach(letter => {
-        let letterCount = 0
-        puzzles.forEach(puzzleLetter => {
-          if (puzzleLetter == letter) letterCount++
-        })
-        numberOfLetters.push(letterCount)
-        totalNumOfLetters += letterCount
-      })
-      console.log(totalNumOfLetters)
-      return [numberOfLetters, totalNumOfLetters]
-    }
-
     function resetControlLetters() {
       for (let i = 0; i <= 63; i++) {
         $('#letterBtn' + i).text('')
@@ -287,6 +271,11 @@
       socket.emit('resetBuzzers')
       if (puzzleNumber > 0) {
         puzzleNumber--
+        let roundNumber = []
+        for (let i = 0; i <= 15; i++) {
+          roundNumber.push(puzzles[puzzleNumber][i])
+        }
+        socket.emit('showRoundNumber', roundNumber)
         for (let i = 0; i <= 63; i++) {
           $('#letterBtn' + i).prop('disabled', true)
           $('#letterBtn' + i).text('')
@@ -301,6 +290,11 @@
       socket.emit('resetBuzzers')
       if (puzzleNumber < puzzles.length - 1) {
         puzzleNumber++
+        let roundNumber = []
+        for (let i = 0; i <= 15; i++) {
+          roundNumber.push(puzzles[puzzleNumber][i])
+        }
+        socket.emit('showRoundNumber', roundNumber)
         for (let i = 0; i <= 63; i++) {
           $('#letterBtn' + i).prop('disabled', true)
           $('#letterBtn' + i).text('')

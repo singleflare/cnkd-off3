@@ -40,23 +40,11 @@
       overflow: hidden;
     }
 
-    #bg {
-      position: absolute;
-      background-image: url('bg gs.jpg');
-      background-size: cover;
-      z-index: -3;
-      width: 1920px;
-      height: 1080px;
-      /* top: -5px;
-      left: -5px;
-      filter: blur(5px);
-      background-color: black; */
-    }
-
     :root {
-      --unopened: #72B04E;
-      --waitToOpen: #0483fb;
-      --opened: #FFFFFF;
+      --idle: rgb(152, 193, 91);
+      --unopened: #caf9ff;
+      --waitToOpen: #2E7BF1;
+      --opened: #caf9ff;
     }
 
     p {
@@ -65,7 +53,8 @@
       text-align: center;
       margin: 10px 0px;
       font-weight: 600;
-      color: #163A66;
+      /* color: #163A66; */
+      color: black;
     }
 
     #board {
@@ -73,15 +62,15 @@
       display: grid;
       grid-template-columns: repeat(16, 1fr);
       grid-template-rows: repeat(4, 1fr);
-      left: 447.5px;
-      top: 512px;
-      scale: 1.45;
+      left: 415px;
+      top: 396px;
+      scale: 1.35;
       gap: 11px;
     }
 
     .letter {
-      background: var(--unopened);
-      width: 56px;
+      background: var(--idle);
+      width: 58px;
       height: 85px;
       border: 2px black solid;
       box-sizing: border-box;
@@ -143,9 +132,8 @@
 
     #boardBg {
       position: absolute;
-      top: 125px;
-      width: 1640px;
-      left: 160px;
+      top: 0;
+      width: 1920px;
     }
 
     .flexcon {
@@ -159,8 +147,7 @@
       text-align: center;
     }
   </style>
-  <div id='bg'></div>
-  <img src='puzzle2012withnontmn.png' id='boardBg'>
+  <img src='puzzle2014.png' id='boardBg'>
   <div id="board"></div>
   <div class='flexcon'>
     <div id="p1Name"></div>
@@ -180,8 +167,78 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     const socket = io();
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    $(function () {
+      for (let i = 0; i <= 63; i++) {
+        if (i == 0 || i == 15 || i == 48 || i == 63) $('#board').append('<div class="letter" id="letter' + i + '" style="opacity:0;"><p></p></div>');
+        else {
+          $('#board').append('<div class="letter" style="background: rgb(' + randInt(112, 142) + ',193,91);" id="letter' + i + '"><p></p></div>');
+        }
+      }
+    })
+    function playSound(url) {
+      const sound = new Howl({
+        src: [url]
+      });
+      sounds.push(sound)
+      sound.play();
+    }
+    let sounds = []
+    socket.on('playSound', url => {
+      playSound(url)
+    })
+    socket.on('stopAllSounds', () => {
+      for (let sound of sounds) {
+        sound.stop()
+      }
+      sounds = []
+    })
+
+    socket.on('reveal', (data) => {
+      if (data.state == 0) {
+        $('#letter' + data.index).removeClass('waitToOpen timer shown')
+      }
+      else if (data.state == 1) {
+        $('#letter' + data.index).css('background', '')
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+      }
+      else if (data.state == 2) {
+        playSound('./sounds/mochup1.mp3');
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('waitToOpen');
+      }
+      else if (data.state == 3) {
+        playSound('./sounds/mochup2.mp3');
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+        $('#letter' + data.index + ' p').addClass('animated')
+        $('#letter' + data.index + ' p').text(data.letter);
+      }
+      else if (data.state == 4) {
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+        $('#letter' + data.index + ' p').text(data.letter);
+      }
+    })
+
+    socket.on('solvePuzzle', data => {
+      console.log(data);
+      let i = 0
+      let interval = setInterval(() => {
+        $('#letter' + data.idxToOpen[i] + ' p').text(data.solvedPuzzle[data.idxToOpen[i]]);
+        i++
+        if (i >= data.idxToOpen.length) clearInterval(interval)
+      }, 10)
+    })
+    socket.on('resetPuzzle', () => {
+      for (let i = 0; i <= 63; i++) {
+        $('#letter' + i).removeClass('waitToOpen shown timer');
+        $('#letter' + i + ' p').text('');
+        $('#letter' + i + ' p').removeClass('animated')
+      }
+    })
   </script>
-  <script type='module' src="puzzleGeneral.js"></script>
+
 </body>
 
 </html>

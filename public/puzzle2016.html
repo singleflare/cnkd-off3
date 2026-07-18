@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <style>
+    * {
+      pointer-events: none;
+    }
+
+    @font-face {
+      font-family: utm-thanh-nhac;
+      src: url("https://cdn.glitch.global/d0e93c15-7185-4dae-8b43-4957a4b0d047/UTM-Thanh-Nhac-TL.ttf?v=1741055311136");
+    }
+
+    @font-face {
+      font-family: 'Myriad Pro';
+      src: url('./MYRIADPRO-SEMIBOLD.OTF');
+    }
+
+    body {
+      background-color: white;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #bg {
+      position: absolute;
+      background-image: url('./bg2016.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      z-index: -3;
+      width: 1930px;
+      height: 1090px;
+      top: -5px;
+      left: -5px;
+      filter: blur(5px);
+    }
+
+    :root {
+      --roundDisplay: #01E7F8;
+      --unopened: #72B04E;
+      --waitToOpen: #0483fb;
+      --opened: #FFFFFF;
+    }
+
+    p {
+      font-family: 'Myriad Pro';
+      font-size: 45pt;
+      text-align: center;
+      margin: 13px;
+      font-weight: 600;
+    }
+
+    #board {
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 10px;
+      width: 1225px;
+      height: 342px;
+      left: 347.5px;
+      top: 424px;
+      scale: 1.45;
+    }
+
+    #black {
+      position: absolute;
+      width: 1980px;
+      height: 740px;
+      top: 230px;
+      left: -30px;
+      background-color: black;
+      z-index: -1;
+      border: 10px solid #48abe0;
+      box-sizing: border-box;
+      box-shadow: 0 0 20px 10px #48abe0, 0 0 20px 10px #48abe0 inset;
+    }
+
+    .letter {
+      background-color: var(--unopened);
+      width: 67px;
+      height: 79px;
+    }
+
+    @keyframes bobbing {
+      0% {
+        transform: scale(0)
+      }
+
+      80% {
+        transform: scale(1.2)
+      }
+
+      100% {
+        transform: scale(1)
+      }
+    }
+
+    .letter p.animated {
+      animation: bobbing linear 0.4s;
+    }
+
+    .letter.waitToOpen {
+      background-color: var(--waitToOpen);
+    }
+
+    .letter.shown {
+      background-color: var(--opened);
+    }
+
+    .letter.roundDisplay {
+      background-color: var(--roundDisplay);
+    }
+
+    .letter.timer {
+      background-color: var(--timer);
+    }
+
+    .letter15 p.pMarginLeft {
+      margin-left: 0px;
+    }
+
+    #p1Score,
+    #p2Score,
+    #p3Score {
+      position: absolute;
+      text-align: center;
+      font-size: 40pt;
+      top: 54px;
+      width: 385px;
+      color: white;
+      font-family: utm-thanh-nhac;
+    }
+
+    #p1Score {
+      left: 380px;
+    }
+
+    #p2Score {
+      left: 807px;
+    }
+
+    #p3Score {
+      left: 1235px;
+    }
+  </style>
+  <div id='bg'></div>
+  <div id="board"></div>
+  <div id='black'></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+    integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"
+    integrity="sha512-xi/RZRIF/S0hJ+yJJYuZ5yk6/8pCiRlEXZzoguSMl+vk2i3m6UjUO/WcZ11blRL/O+rnj94JRGwt/CHbc9+6EA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    const socket = io();
+    $(function () {
+      for (let i = 0; i <= 63; i++) {
+        $('#board').append('<div class="letter" id="letter' + i + '"><p></p></div>');
+      }
+      for (let i = 0; i <= 15; i++) {
+        $('#letter' + i).addClass('roundDisplay')
+      }
+    })
+    socket.on('showRoundNumber', (roundNumber) => {
+      console.log('showRoundNumber', roundNumber)
+      for (let i = 0; i <= 15; i++) {
+        $('#letter' + i).css('background-color', '')
+        $('#letter' + i).addClass('roundDisplay')
+        $('#letter' + i + ' p').text('')
+        if (roundNumber[i] != '') {
+          $('#letter' + i).css('background-color', 'white')
+          $('#letter' + i + ' p').text(roundNumber[i])
+        }
+      }
+    })
+    function playSound(url) {
+      const sound = new Howl({
+        src: [url]
+      });
+      sounds.push(sound)
+      sound.play();
+    }
+    let sounds = []
+    socket.on('playSound', url => {
+      playSound(url)
+    })
+    socket.on('stopAllSounds', () => {
+      for (let sound of sounds) {
+        sound.stop()
+      }
+      sounds = []
+    })
+
+    socket.on('reveal', (data) => {
+      if (data.state == 0) {
+        $('#letter' + data.index).removeClass('waitToOpen timer shown')
+      }
+      else if (data.state == 1) {
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+      }
+      else if (data.state == 2) {
+        playSound('./sounds/mochup1.mp3');
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('waitToOpen');
+      }
+      else if (data.state == 3) {
+        playSound('./sounds/mochup2.mp3');
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+        $('#letter' + data.index + ' p').addClass('animated')
+        $('#letter' + data.index + ' p').text(data.letter);
+      }
+      else if (data.state == 4) {
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+        $('#letter' + data.index + ' p').text(data.letter);
+      }
+    })
+
+    socket.on('solvePuzzle', data => {
+      console.log(data);
+      let i = 0
+      let interval = setInterval(() => {
+        $('#letter' + data.idxToOpen[i] + ' p').text(data.solvedPuzzle[data.idxToOpen[i]]);
+        i++
+        if (i >= data.idxToOpen.length) clearInterval(interval)
+      }, 10)
+    })
+    socket.on('resetPuzzle', () => {
+      for (let i = 16; i <= 63; i++) {
+        $('#letter' + i).removeClass('waitToOpen shown timer');
+        $('#letter' + i + ' p').text('');
+        $('#letter' + i + ' p').removeClass('animated')
+      }
+    })
+  </script>
+</body>
+
+</html>

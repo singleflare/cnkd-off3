@@ -242,4 +242,8 @@ io.on('connection',(socket)=>{
   socket.on('stopAllSounds',()=>{
     io.emit('stopAllSounds')
   })
+  socket.on('showRoundNumber',(roundNumber)=>{
+    console.log('showRoundNumber',roundNumber)
+    io.emit('showRoundNumber',roundNumber)
+  })
 })

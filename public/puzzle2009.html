@@ -42,7 +42,7 @@
 
     #bg {
       position: absolute;
-      background-image: url('bg gs.jpg');
+      background-image: url('bg2009.jpg');
       background-size: cover;
       z-index: -3;
       width: 1920px;
@@ -54,9 +54,10 @@
     }
 
     :root {
-      --unopened: #72B04E;
-      --waitToOpen: #0483fb;
-      --opened: #FFFFFF;
+      --idle: #00d5ff;
+      --unopened: #caf9ff;
+      --waitToOpen: #0026FF;
+      --opened: #caf9ff;
     }
 
     p {
@@ -65,7 +66,8 @@
       text-align: center;
       margin: 10px 0px;
       font-weight: 600;
-      color: #163A66;
+      /* color: #163A66; */
+      color: black;
     }
 
     #board {
@@ -73,14 +75,14 @@
       display: grid;
       grid-template-columns: repeat(16, 1fr);
       grid-template-rows: repeat(4, 1fr);
-      left: 447.5px;
-      top: 512px;
-      scale: 1.45;
+      left: 426.5px;
+      top: 352px;
+      scale: 1.6;
       gap: 11px;
     }
 
     .letter {
-      background: var(--unopened);
+      background: var(--idle);
       width: 56px;
       height: 85px;
       border: 2px black solid;
@@ -92,10 +94,6 @@
         transform: scale(0)
       }
 
-      80% {
-        transform: scale(1.2)
-      }
-
       100% {
         transform: scale(1)
       }
@@ -103,7 +101,7 @@
 
     .letter p.animated {
       background-image: unset;
-      animation: bobbing linear 0.4s;
+      animation: bobbing linear 0.3s;
     }
 
     .letter.hasLetter {
@@ -143,9 +141,9 @@
 
     #boardBg {
       position: absolute;
-      top: 125px;
-      width: 1640px;
-      left: 160px;
+      top: 182px;
+      width: 1800px;
+      left: 60px;
     }
 
     .flexcon {
@@ -160,8 +158,14 @@
     }
   </style>
   <div id='bg'></div>
-  <img src='puzzle2012withnontmn.png' id='boardBg'>
+  <img src='puzzle2009.png' id='boardBg'>
   <div id="board"></div>
+  <img src='buc.png' style='position:absolute;
+    top: 880px;
+    width: 2000px;
+    left: -50px;
+    z-index: -1;
+    height: 220px;'>
   <div class='flexcon'>
     <div id="p1Name"></div>
     <div id="p2Name"></div>
@@ -180,8 +184,81 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     const socket = io();
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    $(function () {
+      for (let i = 0; i <= 63; i++) {
+        if (i == 0 || i == 15 || i == 48 || i == 63) $('#board').append('<div class="letter" id="letter' + i + '" style="opacity:0;"><p></p></div>');
+        else {
+          $('#board').append('<div class="letter" style="background: rgb(' + randInt(0, 80) + ',213,255);" id="letter' + i + '"><p></p></div>');
+        }
+      }
+    })
+    function playSound(url) {
+      const sound = new Howl({
+        src: [url]
+      });
+      sounds.push(sound)
+      sound.play();
+    }
+    let sounds = []
+    socket.on('playSound', url => {
+      if (url == './sounds/moochu.mp3') {
+        playSound('./sounds/moochu2012.wav')
+      }
+      else playSound(url)
+    })
+    socket.on('stopAllSounds', () => {
+      for (let sound of sounds) {
+        sound.stop()
+      }
+      sounds = []
+    })
+
+    socket.on('reveal', (data) => {
+      if (data.state == 0) {
+        $('#letter' + data.index).removeClass('waitToOpen timer shown')
+      }
+      else if (data.state == 1) {
+        $('#letter' + data.index).css('background', '')
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+      }
+      else if (data.state == 2) {
+        playSound('./sounds/mochu2012p1.wav');
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('waitToOpen');
+      }
+      else if (data.state == 3) {
+        playSound('./sounds/mochu2012p2.wav');
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+        $('#letter' + data.index + ' p').addClass('animated')
+        $('#letter' + data.index + ' p').text(data.letter);
+      }
+      else if (data.state == 4) {
+        $('#letter' + data.index).removeClass('waitToOpen timer shown').addClass('shown');
+        $('#letter' + data.index + ' p').text(data.letter);
+      }
+    })
+
+    socket.on('solvePuzzle', data => {
+      console.log(data);
+      let i = 0
+      let interval = setInterval(() => {
+        $('#letter' + data.idxToOpen[i] + ' p').text(data.solvedPuzzle[data.idxToOpen[i]]);
+        i++
+        if (i >= data.idxToOpen.length) clearInterval(interval)
+      }, 10)
+    })
+    socket.on('resetPuzzle', () => {
+      for (let i = 0; i <= 63; i++) {
+        $('#letter' + i).removeClass('waitToOpen shown timer');
+        $('#letter' + i + ' p').text('');
+        $('#letter' + i + ' p').removeClass('animated')
+      }
+    })
   </script>
-  <script type='module' src="puzzleGeneral.js"></script>
+
 </body>
 
 </html>
