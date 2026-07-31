@@ -108,6 +108,7 @@
       <button id="solvePuzzle">Giải</button>
       <button id="puzzleMode">Đoán nhanh</button>
       <button id="openRandomTossup">Mở chữ ngẫu nhiên</button>
+      <button id="openRandomTossup2016">Mở chữ ngẫu nhiên 2016</button>
       <button id="openRandomTossupWithTime">Mở chữ ngẫu nhiên và tính giờ</button>
       <button id="stopOpenRandomTossup">Dừng mở chữ</button>
       <button id="continueOpenRandomTossup">Tiếp tục mở chữ</button>
@@ -389,6 +390,9 @@
     })
     $('#openRandomTossup').click(() => {
       socket.emit('openRandomTossup')
+    })
+    $('#openRandomTossup2016').click(() => {
+      socket.emit('openRandomTossup2016')
     })
     $('#openRandomTossupWithTime').click(() => {
       socket.emit('openRandomTossupWithTime')

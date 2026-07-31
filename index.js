@@ -160,6 +160,28 @@ io.on('connection',(socket)=>{
       }
     },1000)
   })
+  socket.on('openRandomTossup2016',()=>{
+    buzzed=[]
+    io.emit('buzzersReset')
+    io.emit('enableBuzzers')
+    let idxToOpen=[]
+    for(let i=16;i<64;i++){
+      if(puzzleState[i]==1) idxToOpen.push(i)
+    }
+    shuffleArray(idxToOpen)
+    console.log(idxToOpen)
+    let i=0
+    tossupInterval = setInterval(()=>{
+      if(i>=idxToOpen.length) clearInterval(tossupInterval)
+      else {
+        const idx = idxToOpen[i]
+        io.emit('reveal',{index:idx,state:3,letter:puzzle[idx]})
+        puzzleState[idx]=4
+        io.emit('disableLetterBtn',idx)
+        i++
+      }
+    },1000)
+  })
   socket.on('openRandomTossupWithTime',()=>{
     io.emit('enableBuzzers')
     io.emit('bonusTime',bonusTime)
