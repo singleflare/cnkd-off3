@@ -239,6 +239,42 @@
         $('#letter' + i + ' p').removeClass('animated')
       }
     })
+    function showLetter(index, letter) {
+      $('#letter' + index).removeClass('waitToOpen timer shown').addClass('shown');
+      $('#letter' + index + ' p').text(letter);
+    }
+    socket.on('showWelcomePuzzle', () => {
+      showLetter(17, 'C')
+      showLetter(18, 'H')
+      showLetter(19, 'I')
+      showLetter(20, 'Ế')
+      showLetter(21, 'C')
+      showLetter(22, 'N')
+      showLetter(23, 'Ó')
+      showLetter(24, 'N')
+      showLetter(25, 'K')
+      showLetter(26, 'Ỳ')
+      showLetter(27, 'D')
+      showLetter(28, 'I')
+      showLetter(29, 'Ệ')
+      showLetter(30, 'U')
+      showLetter(32, 'X')
+      showLetter(33, 'I')
+      showLetter(34, 'N')
+      showLetter(35, 'K')
+      showLetter(36, 'Í')
+      showLetter(37, 'N')
+      showLetter(38, 'H')
+      showLetter(39, 'C')
+      showLetter(40, 'H')
+      showLetter(41, 'À')
+      showLetter(42, 'O')
+      showLetter(43, 'Q')
+      showLetter(44, 'U')
+      showLetter(45, 'Ý')
+      showLetter(46, 'V')
+      showLetter(47, 'Ị')
+    })
   </script>
 </body>
 

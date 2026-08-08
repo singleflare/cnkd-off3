@@ -268,4 +268,7 @@ io.on('connection',(socket)=>{
     console.log('showRoundNumber',roundNumber)
     io.emit('showRoundNumber',roundNumber)
   })
+  socket.on('showWelcomePuzzle',()=>{
+    io.emit('showWelcomePuzzle')
+  })
 })
