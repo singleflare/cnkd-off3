@@ -253,11 +253,66 @@ io.on('connection',(socket)=>{
       }
     },1000)
   })
-  socket.on('setBonusTime',(time)=>{
+  socket.on('startTossUpBonus2016',()=>{
+    /*buzzed=[]
+    io.emit('buzzersReset')
+    io.emit('enableBuzzers')
+    let idxToOpen=[]
+    for(let i=16;i<64;i++){
+      if(puzzleState[i]==1) idxToOpen.push(i)
+    }
+    shuffleArray(idxToOpen)
+    console.log(idxToOpen)
+    let i=0
+    tossupInterval = setInterval(()=>{
+      if(i>=idxToOpen.length) clearInterval(tossupInterval)
+      else {
+        const idx = idxToOpen[i]
+        io.emit('reveal',{index:idx,state:3,letter:puzzle[idx]})
+        puzzleState[idx]=4
+        io.emit('disableLetterBtn',idx)
+        i++
+      }
+    },1000)*/
+    io.emit('enableBuzzers')
+    bonusTimeInterval=setInterval(()=>{
+      io.emit('bonusTime',--bonusTime)
+      if(bonusTime==0) {
+        clearInterval(tossupInterval)
+        clearInterval(bonusTimeInterval)
+      }
+    },1000)
+    let idxToOpen=[]
+    for(let i=16;i<64;i++){
+      if(puzzleState[i]==1) {
+        idxToOpen.push(i)
+        if(puzzle[i]=='N'||puzzle[i]=='H'||puzzle[i]=='A'||puzzle[i]=='?'||puzzle[i]=='-'||puzzle[i]=='!'||puzzle[i]=='.'||puzzle[i]==','||puzzle[i]=="&"||puzzle[i]=='/') {
+          puzzleState[i]=4
+          io.emit('reveal',{index:i,state:4,letter:puzzle[i]})
+          io.emit('disableLetterBtn',i)
+          idxToOpen.pop()
+        }
+        io.emit('reveal',{index:i,state:1})
+      }
+    }
+    shuffleArray(idxToOpen)
+    console.log(idxToOpen)
+    let i=0
+    tossupInterval = setInterval(()=>{
+      if(i>=idxToOpen.length) clearInterval(tossupInterval)
+      else {
+        const idx = idxToOpen[i]
+        io.emit('reveal',{index:idx,state:3,letter:puzzle[idx]})
+        io.emit('disableLetterBtn',idx)
+        i++
+      }
+    },1000)
+  })
+  /*socket.on('setBonusTime',(time)=>{
     bonusTime=time
     io.emit('bonusTime',time)
     clearInterval(bonusTimeInterval)
-  })
+  })*/
   socket.on('playSound',url=>{
     io.emit('playSound',url)
   })
