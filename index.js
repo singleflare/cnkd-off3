@@ -102,7 +102,7 @@ io.on('connection',(socket)=>{
   socket.on('solvePuzzle',()=>{
     buzzed=[]
     io.emit('buzzersReset')
-    io.emit('playSound', './sounds/solved.mp3')
+    io.emit('playSound', './sounds/giaiochu.mp3')
     let idxToOpen=[]
     console.log('puzzlestate107'+puzzleState)
     for(let i=0;i<64;i++){
